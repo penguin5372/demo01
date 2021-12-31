@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+				
+			}
+			.obox{
+				width: 400px;
+				background: #ccc;
+				margin: 100px auto;
+				padding-bottom: 30px;
+				padding-top: 30px;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				-webkit-user-select: none;
+				user-select: none;
+			}
+			.p1{
+				color: white;
+				font-size: 12px;
+				text-decoration: underline;
+				margin-bottom: 10px;
+				text-indent: 60px;
+				cursor: pointer;
+				
+			}
+			.box{
+				width: 280px;
+				margin: 0 auto;
+			}
+			.line{
+				width: 100%;
+				height: 10px;
+				background: white;
+				border-radius: 10px;
+				margin-top: 20px;
+				position: relative;
+			}
+			.range{
+				width: 56px;
+				height:200px ;
+				position: absolute;
+				bottom: 0;
+				left: 20px;
+				transition: all 1s;
+			}
+			.range img{
+				position: absolute;
+				left: 9px;
+				top: 20px;
+			}
+			.range1{
+				position: absolute;
+				bottom: -10px;
+				left: 0px;
+				background: blue;
+				width: 100%;
+				height: 30px;
+				border-radius: 15px;
+				cursor: pointer;
+			}
+		</style>
+		<script type="text/javascript">
+			window.onload = function(){
+				var p1 = document.querySelector(".p1");
+				var imgbig = document.querySelector(".imgbig");
+				var imgsmall = document.querySelector(".imgsmall");
+				var range1 = document.querySelector(".range1");
+				var range = document.querySelector(".range");
+				var line = document.querySelector(".line");
+				var n1 = 0;
+				var num = 0;
+				//滑块拖拽
+				range1.onmousedown = function(e){
+					var e = e||event;
+					var boxleft = e.clientX-line.offsetLeft-range.offsetLeft;
+					document.onmousemove = function(e){
+						num=1;
+						range.style.transition = "none";
+						var e = e||event;
+						var x = e.clientX-line.offsetLeft-boxleft;
+						
+						if(x<=0){
+							range.style.left = 0+"px";
+						}else if(x>=line.offsetWidth-range1.offsetWidth){
+							range.style.left = line.offsetWidth-range1.offsetWidth+"px";
+						}else{
+							range.style.left = x+"px";
+						}
+					}
+					document.onmouseup = function(){
+						document.onmousemove=null;
+						var rangeleft = range.offsetLeft;
+						//是否滑到指定位置
+						console.log(rangeleft+","+arr[n1].x1);
+						if(rangeleft>=arr[n1].x1-3&&rangeleft<=arr[n1].x1+3){
+							alert("验证成功");
+						}else{
+							if(num==1){
+								//抖几下
+								var ox1 = 5;
+								var a1 = 0;
+								var timer = setInterval(function(){
+									a1++;
+									ox1*=-1;
+									range.style.left = rangeleft+ox1+"px";
+									if(a1==20){
+										clearInterval(timer);
+										range.style.transition="all 1s";
+										range.style.left=20+"px";
+										fn();
+										num=0;
+									}
+								},10)
+							}
+							
+						}
+					}
+				}
+				p1.onclick = function(){
+					fn();
+				}
+				var arr = [
+					{
+						imgb:"img/b1.png",
+						imgs:"img/b2.png",
+						x1:190,
+						y1:20
+					},
+					{
+						imgb:"img/c1.png",
+						imgs:"img/c2.png",
+						x1:198,
+						y1:31
+					},
+					{
+						imgb:"img/d1.png",
+						imgs:"img/d2.png",
+						x1:186,
+						y1:56
+					}
+				]
+				//切换图片
+				fn();
+				
+				function fn(){
+					function fn1(){
+						var n2 = Math.floor(Math.random()*3);//[0,2];
+						n1==n2?fn1():n1=n2;
+					}
+					fn1();
+					imgbig.src = arr[n1].imgb;
+					imgsmall.src = arr[n1].imgs;
+					imgsmall.style.top = arr[n1].y1+"px";
+				}
+				window.ondragdrop = function(){
+					return false;
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div class="obox">
+			<p class="p1">点击我，切换图片</p>
+			<div class="box">
+				<img draggable="false" class="imgbig" src="img/b1.png" />
+				<div class="line">
+					<div class="range">
+						<div class="range1"></div>
+						<img draggable="false" class="imgsmall" src="img/b2.png" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
